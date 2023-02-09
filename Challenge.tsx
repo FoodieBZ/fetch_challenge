@@ -21,7 +21,7 @@ type Inputs = {
     name: string;
     email: string;
     password: string;
-    password_check: string;
+    passwordCheck: string;
     occupation: string;
     state: string;
 }; 
@@ -71,8 +71,8 @@ export default function Challenge({data} : props) {
                 <input {...register('password')} placeholder = "Password" pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$" title = "Passwords must contain at least 12 letters with a number, letter, uppercase letter and special character consisting of one of these #?!@$%^&*-."className="fetchForm" type="text"/>
                 {errors.password && errors.password.type == "required"}
 
-                <input {...register('password_check')} placeholder = "Verify New Password" className="fetchForm" type="text"/>
-                {errors.password_check && errors.password_check.type == "required"}
+                <input {...register('passwordCheck')} placeholder = "Verify New Password" className="fetchForm" type="text"/>
+                {errors.passwordCheck && errors.passwordCheck.type == "required"}
 
                 <select defaultValue=""  {...register('occupation')} className="fetchForm">
                     <option disabled value="" >Select an Occupation</option>
@@ -95,46 +95,23 @@ export default function Challenge({data} : props) {
                 
                 {errors.state && errors.state.message !== "" && errors.state.type === "required"}
                 <button onClick= { () => {
-                    var arr = ["Please fix the following: "]; 
-                    if (getValues("name") === '') { 
-                        arr.push('Please enter in a name. ') 
-                    }
+                    const errorMessages = [
+                        getValues("name") === "" && "Please enter in a name.",
+                        getValues("email") === "" && "Please enter in an email address.",
+                        getValues("password") === "" && "Please enter in a password.",
+                        getValues("passwordCheck") === "" && "Please enter in a verified password.",
+                        getValues("password") !== "" && !getValues("password").match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/) && "Please enter in a valid password.",
+                        getValues("passwordCheck") !== getValues("password") && "Passwords don't match.",
+                        getValues("email").match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/g) === null &&
+                        getValues("email") !== "" && "Please enter in a valid email address.",
+                        getValues("occupation") === "" && "Please select an occupation.",
+                        getValues("state") === "" && "Please select a state."
+                    ]
+                        .filter(message => message)
+                        .join("\n");
                     
-                    if (getValues("email") === '') { 
-                        arr.push('Please enter in an email address. ') 
-                    }
-
-                    if (getValues("occupation") === '') {
-                        arr.push('Please select an occupation. ') 
-                    }
-                
-                    if (getValues("state") === '') {
-                        arr.push('Please select a state. ') 
-                    }
-
-                    if (getValues("password") === '') {
-                        arr.push('Please enter in a password. ') 
-                    }
-
-                    if (getValues("password_check") === '') {
-                        arr.push('Please enter in a verified password. ') 
-                    }
-
-                    if (!getValues("password").match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$")) {
-                        arr.push('Please enter in a valid password ') 
-                    }
-
-                    if (getValues("password_check") !== getValues("password")) {
-                        arr.push("Passwords don't match") 
-                    }
-
-                    if (!getValues("email").match("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$") && 
-                    getValues("email") !== '') {
-                        arr.push("Please enter in a valid email address.") 
-                    }
-
-                    if (arr.length != 1) {
-                        toast.error(arr.join("\n"), {
+                    if (errorMessages) {
+                        toast.error(`Please fix the following:\n${errorMessages}`, {
                             position: "top-right",
                             autoClose: 20000,
                             hideProgressBar: false,
@@ -142,7 +119,7 @@ export default function Challenge({data} : props) {
                             pauseOnHover: true,
                             draggable: true,
                             progress: undefined,
-                            theme: "colored",
+                            theme: "colored"
                         })
                     }
                     else {
