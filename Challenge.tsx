@@ -28,7 +28,6 @@ type Inputs = {
 
 export default function Challenge({data} : props) {
     const { register, handleSubmit, formState:{errors}, getValues} = useForm<Inputs>();
-    const multipleValues = getValues(["name", "email", "password", "occupation", "state"]);
     const onSubmit: SubmitHandler<Inputs> = async (formData) => 
         {const { name, email, password, occupation, state } = formData;
         const data = { name, email, password, occupation, state };
@@ -92,8 +91,8 @@ export default function Challenge({data} : props) {
                         </option>
                     ))}
                 </select>
-                
                 {errors.state && errors.state.message !== "" && errors.state.type === "required"}
+                
                 <button onClick= { () => {
                     const errorMessages = [
                         getValues("name") === "" && "Please enter in a name.",
