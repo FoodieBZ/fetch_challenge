@@ -17,4 +17,4 @@ Sends a Post request with the following:
 - Occupation
 - State
 
-Created toast notofications for both error and success messages. 
+Created toast notifications for both error and success messages. 
